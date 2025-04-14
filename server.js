@@ -161,8 +161,12 @@ let items = [
 app.get("/api/items", (req, res) => {
   let filteredItems = [...items];
 
-  const { material, category, price } = req.query;
+  const { name, description, price, material, category, image } = req.body;
 
+  items.push({ name, description, price, material, category, image });
+
+  res.status(201).send({ message: "Item added successfully" });
+  
   // Filter by material
   if (material && material !== "all") {
     filteredItems = filteredItems.filter(
