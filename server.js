@@ -158,15 +158,17 @@ let items = [
   },
 ];
 
-app.get("/api/items", (req, res) => {
-  let filteredItems = [...items];
-
+app.post("/api/items", (req, res) => {
   const { name, description, price, material, category, image } = req.body;
+
+  if (!name || !description || !price || !material || !category || !image) {
+    return res.status(400).send({ error: "Missing required fields" });
+  }
 
   items.push({ name, description, price, material, category, image });
 
   res.status(201).send({ message: "Item added successfully" });
-  
+
   // Filter by material
   if (material && material !== "all") {
     filteredItems = filteredItems.filter(
@@ -208,3 +210,8 @@ const validateHouse = (house) => {
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
+
+/*
+app.delete("api/items/:id", (req, res) => {
+  const item = items.find((item) => iteam._id === req.params.id));
+};*/
