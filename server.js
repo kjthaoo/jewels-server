@@ -158,23 +158,50 @@ let items = [
   },
 ];
 
-app.post("/api/items", (req, res) => {
-  const { name, description, price, material, category, image } = req.body;
+// GET - Fetch and optionally filter items
+app.get("/api/items", (req, res) => {
+  let filteredItems = [...items];
 
-  if (!name || !description || !price || !material || !category || !image) {
-    return res.status(400).send({ error: "Missing required fields" });
-  }
+  const { material, category, price } = req.query;
 
-  items.push({ name, description, price, material, category, image });
-
-  res.status(201).send({ message: "Item added successfully" });
-
-  // Filter by material
   if (material && material !== "all") {
-    filteredItems = filteredItems.filter(
-      (item) => item.material === material
-    );
+    filteredItems = filteredItems.filter(item => item.material === material);
   }
+
+  if (category && category !== "all") {
+    filteredItems = filteredItems.filter(item => item.category === category);
+  }
+
+  if (price === "low-to-high") {
+    filteredItems.sort((a, b) => a.price - b.price);
+  } else if (price === "high-to-low") {
+    filteredItems.sort((a, b) => b.price - a.price);
+  }
+
+  res.json(filteredItems);
+});
+
+// POST - Add a new item
+app.post("/api/items", upload.single("image"), (req, res) => {
+  const { name, description, price, material, category } = req.body;
+  const image = req.file;
+
+  if (!name || !price || !image) {
+    return res.status(400).json({ message: "Missing required fields." });
+  }
+
+  // Simulate saving to DB
+  const newItem = {
+    id: Date.now(),
+    name,
+    description,
+    price,
+    material,
+    category,
+    image: image.filename,
+  };
+
+  res.status(201).json(newItem);
 
   // Filter by category
   if (category && category !== "all") {
