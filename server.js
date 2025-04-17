@@ -7,6 +7,7 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
+app.use("/uploads", express.static("uploads")); //just added this
 
 const upload = multer({ dest: "uploads/" });
 
@@ -159,7 +160,7 @@ let items = [
 ];
 
 // GET - Fetch and optionally filter items
-app.get("/api/items", (req, res) => {
+/*app.get("/api/items", (req, res) => {
   let filteredItems = [...items];
 
   const { material, category, price } = req.query;
@@ -178,8 +179,8 @@ app.get("/api/items", (req, res) => {
     filteredItems.sort((a, b) => b.price - a.price);
   }
 
-  res.json(filteredItems);
-});
+  res.json(filteredItems); //this is kinda wrong since i have double response bug in the GET and POST route
+});*/
 
 // POST - Add a new item
 app.post("/api/items", upload.single("image"), (req, res) => {
@@ -190,7 +191,7 @@ app.post("/api/items", upload.single("image"), (req, res) => {
     return res.status(400).json({ message: "Missing required fields." });
   }
 
-  // Simulate saving to DB
+  // simulate saving to DB
   const newItem = {
     id: Date.now(),
     name,
@@ -198,7 +199,8 @@ app.post("/api/items", upload.single("image"), (req, res) => {
     price,
     material,
     category,
-    image: image.filename,
+    image: `/uploads/${image.filename}`,
+    //image: image.filename,//wait this is wrong (old)
   };
 
   res.status(201).json(newItem);
