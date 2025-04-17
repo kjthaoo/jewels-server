@@ -7,6 +7,7 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
+app.use("/uploads", express.static("uploads")); //adding this line for images to show when submitted as new item
 
 const upload = multer({ dest: "uploads/" });
 
