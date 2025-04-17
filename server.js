@@ -7,7 +7,6 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
-app.use("/uploads", express.static("uploads")); //just added this
 
 const upload = multer({ dest: "uploads/" });
 
@@ -179,7 +178,7 @@ let items = [
     filteredItems.sort((a, b) => b.price - a.price);
   }
 
-  res.json(filteredItems); //this is kinda wrong since i have double response bug in the GET and POST route
+  res.json(filteredItems); //this is kinda wrong since i have double response bug in the GET and POST r
 });*/
 
 // POST - Add a new item
@@ -199,8 +198,7 @@ app.post("/api/items", upload.single("image"), (req, res) => {
     price,
     material,
     category,
-    image: `/uploads/${image.filename}`,
-    //image: image.filename,//wait this is wrong (old)
+    image: image.filename,//wait this is wrong
   };
 
   res.status(201).json(newItem);
