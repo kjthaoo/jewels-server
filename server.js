@@ -159,7 +159,7 @@ let items = [
 ];
 
 // GET - Fetch and optionally filter items
-/*app.get("/api/items", (req, res) => {
+app.get("/api/items", (req, res) => {
   let filteredItems = [...items];
 
   const { material, category, price } = req.query;
@@ -178,8 +178,8 @@ let items = [
     filteredItems.sort((a, b) => b.price - a.price);
   }
 
-  res.json(filteredItems); //this is kinda wrong since i have double response bug in the GET and POST r
-});*/
+  res.json(filteredItems);
+});
 
 // POST - Add a new item
 app.post("/api/items", upload.single("image"), (req, res) => {
@@ -198,7 +198,7 @@ app.post("/api/items", upload.single("image"), (req, res) => {
     price,
     material,
     category,
-    image: image.filename,//wait this is wrong
+    image: image.filename,
   };
 
   res.status(201).json(newItem);
