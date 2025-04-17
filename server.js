@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const Joi = require("joi");
 const multer = require("multer");
+const mongoose = require("mongoose"); // added for mongodb
 const app = express();
 
 app.use(express.static("public"));
