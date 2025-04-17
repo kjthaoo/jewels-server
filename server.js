@@ -219,6 +219,10 @@ app.post("/api/items", upload.single("image"), (req, res) => {
     filteredItems.sort((a, b) => b.price - a.price);
   }
 
+  if(req.file) {
+    newItem.image = req.file.filename;
+  }
+
   res.json(filteredItems);
   console.log(req.body); // or form fields
 
