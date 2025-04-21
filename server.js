@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const Joi = require("joi");
 const multer = require("multer");
-//const mongoose = require("mongoose"); // added for mongodb
+const mongoose = require("mongoose"); // added for mongodb
 const app = express();
 
 app.use(express.static("public"));
@@ -228,9 +228,53 @@ app.post("/api/items", upload.single("image"), (req, res) => {
 
 });
 
-app.get("/api/houses", upload.single("img"), (req, res) => {
+// PUT - Update an item by ID
+app.put("/api/items/:id", upload.single("image"), (req, res) => {
+  const itemId = req.params.id;
+  const item = items.find((item) => item.id === itemId);
+
+  if (!item) {
+    return res.status(404).json({ message: "Item not found" });
+  }
+
+  const { name, description, price, material, category } = req.body;
+  const image = req.file;
+
+  // Update item properties
+  item.name = name || item.name;
+  item.description = description || item.description;
+  item.price = price || item.price;
+  item.material = material || item.material;
+  item.category = category || item.category;
+
+  if (image) {
+    item.image = image.filename;
+  }
+
+  res.json(item);
+});
+
+// DELETE - Delete an item by ID
+app.delete("/api/items/:id", (req, res) => {
+  const itemId = req.params.id;
+  const itemIndex = items.findIndex((item) => item.id === itemId);
+
+  if (itemIndex === -1) {
+    return res.status(404).json({ message: "Item not found" });
+  }
+
+  const deletedItem = items.splice(itemIndex, 1);
+  res.json(deletedItem);
+});
+
+app.get("/api/houses", (req, res) => {
   res.send(houses);
 });
+
+/*app.get("/api/houses", upload.single("img"), (req, res) => {
+  res.send(houses);
+});
+*/
 
 const validateHouse = (house) => {
   const schema = Joi.object({
